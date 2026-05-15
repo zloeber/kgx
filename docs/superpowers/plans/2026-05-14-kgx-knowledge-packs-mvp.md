@@ -8,14 +8,6 @@
 
 **Tech Stack:** Python 3.12+, Typer, Pydantic v2, jsonschema (CLI validation), pytest; optional later: Firecrawl, MCP Python SDK, OCI tooling.
 
----
-
-## Deprecation note for humans
-
-The Cursor `/write-plan` command is deprecated; prefer invoking the **superpowers writing-plans** skill when you want future plans in this format.
-
----
-
 ## Plan scope and split guidance
 
 This file is the **MVP + architecture foundation** plan (Phases 1–3 from `prompt.md`, through first vendor pack and local query). **Separate follow-on plans** are recommended before implementation work begins on: MCP adapter surface, repo analyzer, OCI registry, and production signing — each is an independent subsystem with its own test matrix and release cadence.
