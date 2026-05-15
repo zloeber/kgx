@@ -1,0 +1,2 @@
+{"id": "ent:s3-bucket", "type": "aws.resource", "label": "S3 Bucket", "metadata": {"service": "s3"}}
+{"id": "ent:iam-policy", "type": "aws.resource", "label": "IAM Policy", "metadata": {"service": "iam"}}

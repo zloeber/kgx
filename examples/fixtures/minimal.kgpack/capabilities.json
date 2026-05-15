@@ -1,0 +1,5 @@
+{
+  "mcp_servers": [{ "name": "aws.documentation" }],
+  "tool_ids": ["fixture.lookup"],
+  "skill_paths": []
+}

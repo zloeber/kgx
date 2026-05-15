@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "source_tier": "vendor_official",
+      "uri": "https://docs.aws.amazon.com/"
+    }
+  ]
+}

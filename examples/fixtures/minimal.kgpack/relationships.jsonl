@@ -1,0 +1,1 @@
+{"id": "rel:bucket-to-policy", "from_id": "ent:s3-bucket", "to_id": "ent:iam-policy", "type": "governed_by", "metadata": {}}
