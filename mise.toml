@@ -1,0 +1,7 @@
+# https://mise.jdx.dev/configuration.html
+# Pin runtimes and dev CLIs. Run: mise install
+
+[tools]
+python = "3.12.13"
+task = "3.50.0"
+ruff = "0.15.13"

@@ -1,0 +1,52 @@
+# https://taskfile.dev
+# Requires: Task (e.g. `mise install` from repo root). Python comes from mise or PATH.
+
+version: "3"
+
+vars:
+  PY_BOOT: python
+  PY: "{{.TASKFILE_DIR}}/.venv/bin/python"
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Create .venv and editable install with dev extras (pytest, ruff, mcp)
+    cmds:
+      - "{{.PY_BOOT}} -m venv .venv"
+      - "{{.PY}} -m pip install -U pip"
+      - "{{.PY}} -m pip install -e '.[dev]'"
+
+  test:
+    desc: Run pytest (requires task install first)
+    cmds:
+      - "{{.PY}} -m pytest tests/ -v"
+
+  lint:
+    desc: Ruff check (requires task install first)
+    cmds:
+      - "{{.PY}} -m ruff check src tests"
+
+  format:
+    desc: Ruff format write (requires task install first)
+    cmds:
+      - "{{.PY}} -m ruff format src tests"
+
+  ci:
+    desc: Lint then test (sequential)
+    cmds:
+      - task lint
+      - task test
+
+  validate-fixture:
+    desc: Validate the minimal example pack via the Typer app
+    cmds:
+      - "{{.PY}} -m kgx.cli.main validate examples/fixtures/minimal.kgpack"
+
+  spike:
+    desc: AWS docs ingestion spike (network; writes build/aws-core.kgpack)
+    cmds:
+      - "{{.PY}} scripts/aws_docs_spike.py"
