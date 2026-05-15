@@ -1,11 +1,25 @@
-# https://taskfile.dev
-# Requires: Task (e.g. `mise install` from repo root). Python comes from mise or PATH.
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 
 version: "3"
+silent: true
 
 vars:
   PY_BOOT: python
   PY: "{{.TASKFILE_DIR}}/.venv/bin/python"
+
+includes:
+  docker:
+    taskfile: ./tasks/Taskfile.docker.yml
+    optional: true
+  github:
+    taskfile: ./tasks/Taskfile.github.yml
+    optional: true
+  python:
+    taskfile: ./tasks/Taskfile.python.yml
+    optional: true
+  mcp:
+    taskfile: ./tasks/Taskfile.mcp.yml
+    optional: true
 
 tasks:
   default:
