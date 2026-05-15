@@ -13,10 +13,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+dev = ["pytest", "ruff", "mcp"]
+mcp = ["mcp"]
 
 [project.scripts]
 kgx = "kgx.cli.main:app"
+kgx-mcp = "kgx.mcp.server:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
