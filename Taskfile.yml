@@ -64,3 +64,10 @@ tasks:
     desc: AWS docs ingestion spike (network; writes build/aws-core.kgpack)
     cmds:
       - "{{.PY}} scripts/aws_docs_spike.py"
+
+  confluence-pack:
+    desc: Build kgpack from a Confluence Markdown export tree (override EXPORT_DIR)
+    vars:
+      EXPORT_DIR: '{{default "examples/fixtures/confluence-export-sample" .EXPORT_DIR}}'
+    cmds:
+      - "{{.PY}} scripts/confluence_export_to_pack.py {{.EXPORT_DIR}} -o build/confluence-export.kgpack"

@@ -31,10 +31,13 @@ task test
 | CLI help | `kgx --help` |
 | MCP server (stdio) | `kgx-mcp` or `python -m kgx.mcp` |
 | AWS docs spike (network) | `task spike` — see [`docs/runbooks/aws-ingestion-spike.md`](docs/runbooks/aws-ingestion-spike.md) |
+| Confluence export → pack | `task confluence-pack EXPORT_DIR=...` — see [`docs/runbooks/confluence-export-to-pack.md`](docs/runbooks/confluence-export-to-pack.md) |
 
 ## Layout
 
 - `src/kgx/` — library, Typer CLI, MCP server, pack loader, search, providers  
 - `schemas/` — JSON Schema for manifests and JSONL rows  
 - `examples/fixtures/` — minimal valid pack for tests  
-- `scripts/` — standalone spikes (not part of the importable package)
+- `scripts/` — standalone spikes (not part of the importable package)  
+- `docs/plans/` — feature design notes  
+- `docs/runbooks/` — operator steps (exports, ingestion)
