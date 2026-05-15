@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kgx.dev/schemas/kgpack-relationship.schema.json",
+  "title": "KG Pack relationship (JSONL line)",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "from_id", "to_id", "type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for this relationship within the pack."
+    },
+    "from_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Entity id of the relationship source."
+    },
+    "to_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Entity id of the relationship target."
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relationship type or predicate label."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Arbitrary structured metadata for this relationship."
+    }
+  }
+}

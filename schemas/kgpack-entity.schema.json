@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kgx.dev/schemas/kgpack-entity.schema.json",
+  "title": "KG Pack entity (JSONL line)",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "type", "label"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for this entity within the pack."
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Entity type or class label."
+    },
+    "label": {
+      "type": "string",
+      "description": "Primary human-facing label."
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Alternate labels or surface forms."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Arbitrary structured metadata for this entity."
+    }
+  }
+}
