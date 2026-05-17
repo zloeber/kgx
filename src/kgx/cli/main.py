@@ -6,11 +6,13 @@ from pathlib import Path
 
 import typer
 
+from kgx.cli.pack import pack_app
 from kgx.core.pack.loader import load_pack_directory
 from kgx.core.pack.validator import validate_pack_directory
 from kgx.core.search.keyword import SearchHit, keyword_search
 
 app = typer.Typer(help="kgx — knowledge pack tooling.", no_args_is_help=True)
+app.add_typer(pack_app, name="pack")
 
 
 def _err(msg: str) -> None:

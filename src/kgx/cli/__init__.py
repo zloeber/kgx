@@ -1,1 +1,1 @@
-"""kgx command-line interface package."""
+"""kgx command-line interface."""

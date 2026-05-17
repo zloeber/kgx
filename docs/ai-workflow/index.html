@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kgx — AI workflow guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <rect width="36" height="36" rx="8" fill="#1c2430" stroke="#3dd6c6" stroke-width="1.5" />
+            <path
+              d="M8 24 L14 12 L20 20 L28 8"
+              fill="none"
+              stroke="#3dd6c6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="14" cy="12" r="2" fill="#6b8cff" />
+            <circle cx="20" cy="20" r="2" fill="#6b8cff" />
+            <circle cx="28" cy="8" r="2" fill="#c792ea" />
+          </svg>
+          <span>kgx — AI workflow</span>
+        </div>
+        <p class="tagline">
+          How autonomous agents and humans share the same portable knowledge packs:
+          ingest once, validate locally, query and edit through CLI or MCP.
+        </p>
+        <p class="nav-site"><a href="use-cases.html">Use cases</a> — four illustrated scenarios</p>
+        <nav class="toc" aria-label="On this page">
+          <a href="#problem">Problem</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#pack">Pack anatomy</a>
+          <a href="#agent">Agent loop</a>
+          <a href="#mcp">MCP tools</a>
+          <a href="#human">Human path</a>
+          <a href="#future">Growing core</a>
+        </nav>
+      </header>
+
+      <section id="problem">
+        <h2>What kgx is (and is not)</h2>
+        <p class="lead">
+          kgx is a <strong>package manager for operational knowledge</strong> — not a RAG platform,
+          not a monolithic enterprise graph, and not an agent harness. Agents <em>mount</em> packs;
+          other systems can index them separately.
+        </p>
+        <div class="card-grid">
+          <div class="card">
+            <h4>Portable packs</h4>
+            <p>
+              Git-friendly directory bundles: manifest, JSONL graph rows, markdown documents,
+              provenance, capability references.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Composable layers</h4>
+            <p>
+              <span class="badge badge-vendor">vendor_core</span> immutable vendor docs;
+              <span class="badge badge-overlay">overlay</span> internal Confluence/runbooks on top.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Agent surface</h4>
+            <p>
+              <code>kgx-mcp</code> exposes validate, inspect, query, and pack editing over stdio
+              (Model Context Protocol).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="pipeline">
+        <h2>End-to-end pipeline</h2>
+        <p class="lead">
+          External tools export or crawl sources; kgx providers normalize into records and emit a
+          <code>.kgpack</code> directory. The agent never needs live Confluence credentials if
+          export happened earlier.
+        </p>
+
+        <div class="diagram" role="img" aria-label="Pipeline from sources through kgpack to agent and human">
+          <svg viewBox="0 0 920 320" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#8b9cb3" />
+              </marker>
+              <linearGradient id="gVendor" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e2a4a" />
+                <stop offset="100%" stop-color="#151b24" />
+              </linearGradient>
+              <linearGradient id="gPack" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0d3d38" />
+                <stop offset="100%" stop-color="#151b24" />
+              </linearGradient>
+              <linearGradient id="gAgent" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#2d1f42" />
+                <stop offset="100%" stop-color="#151b24" />
+              </linearGradient>
+            </defs>
+
+            <!-- Sources -->
+            <text x="24" y="28" fill="#8b9cb3" font-size="11" font-family="system-ui" font-weight="600">SOURCES</text>
+            <rect x="24" y="40" width="130" height="52" rx="8" fill="#1c2430" stroke="#7c9cff" stroke-width="1.5" />
+            <text x="89" y="62" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">AWS docs</text>
+            <text x="89" y="78" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">official HTML</text>
+
+            <rect x="24" y="108" width="130" height="52" rx="8" fill="#1c2430" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="89" y="130" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">Confluence</text>
+            <text x="89" y="146" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">cme → .md tree</text>
+
+            <rect x="24" y="176" width="130" height="52" rx="8" fill="#1c2430" stroke="#8b9cb3" stroke-width="1" stroke-dasharray="4 3" />
+            <text x="89" y="198" fill="#8b9cb3" font-size="12" text-anchor="middle" font-family="system-ui">Git / folders</text>
+            <text x="89" y="214" fill="#6b7a8f" font-size="10" text-anchor="middle" font-family="system-ui">planned</text>
+
+            <!-- Connectors -->
+            <text x="200" y="28" fill="#8b9cb3" font-size="11" font-family="system-ui" font-weight="600">INGEST</text>
+            <rect x="200" y="72" width="150" height="100" rx="8" fill="#151b24" stroke="#2a3544" stroke-width="1.5" />
+            <text x="275" y="100" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">Providers / scripts</text>
+            <text x="275" y="118" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">normalize → records[]</text>
+            <text x="275" y="136" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">emit_pack_from_records</text>
+            <text x="275" y="158" fill="#6b8cff" font-size="9" text-anchor="middle" font-family="monospace">aws_docs_spike.py</text>
+
+            <line x1="154" y1="66" x2="198" y2="100" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+            <line x1="154" y1="134" x2="198" y2="122" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+            <line x1="154" y1="202" x2="198" y2="145" stroke="#6b7a8f" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)" />
+
+            <!-- Pack -->
+            <text x="400" y="28" fill="#8b9cb3" font-size="11" font-family="system-ui" font-weight="600">ARTIFACT</text>
+            <rect x="400" y="48" width="200" height="200" rx="10" fill="url(#gPack)" stroke="#3dd6c6" stroke-width="2" />
+            <text x="500" y="78" fill="#3dd6c6" font-size="14" text-anchor="middle" font-family="system-ui" font-weight="600">.kgpack/</text>
+            <text x="500" y="102" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="monospace">manifest.json</text>
+            <text x="500" y="120" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="monospace">entities.jsonl</text>
+            <text x="500" y="138" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="monospace">relationships.jsonl</text>
+            <text x="500" y="156" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="monospace">documents/*.md</text>
+            <text x="500" y="180" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">provenance + capabilities</text>
+            <text x="500" y="228" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">validate · query · edit</text>
+
+            <line x1="350" y1="122" x2="398" y2="122" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <!-- Agent -->
+            <text x="660" y="28" fill="#8b9cb3" font-size="11" font-family="system-ui" font-weight="600">AGENT (MCP)</text>
+            <rect x="660" y="56" width="220" height="88" rx="8" fill="url(#gAgent)" stroke="#c792ea" stroke-width="1.5" />
+            <text x="770" y="88" fill="#e8edf4" font-size="13" text-anchor="middle" font-family="system-ui">Cursor / Claude / …</text>
+            <text x="770" y="108" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">stdio ↔ kgx-mcp</text>
+            <text x="770" y="128" fill="#c792ea" font-size="10" text-anchor="middle" font-family="monospace">kgx_query_pack · upsert …</text>
+
+            <!-- Human -->
+            <text x="660" y="168" fill="#8b9cb3" font-size="11" font-family="system-ui" font-weight="600">HUMAN (CLI)</text>
+            <rect x="660" y="188" width="220" height="72" rx="8" fill="#151b24" stroke="#6b8cff" stroke-width="1.5" />
+            <text x="770" y="218" fill="#e8edf4" font-size="13" text-anchor="middle" font-family="system-ui">Terminal</text>
+            <text x="770" y="238" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="monospace">kgx validate · pack entity add</text>
+
+            <line x1="600" y1="100" x2="658" y2="100" stroke="#c792ea" stroke-width="1.5" marker-end="url(#arrow)" />
+            <line x1="600" y1="180" x2="658" y2="210" stroke="#6b8cff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+            <!-- Sidecar (future) -->
+            <rect x="400" y="268" width="200" height="44" rx="6" fill="#151b24" stroke="#2a3544" stroke-width="1" stroke-dasharray="5 4" />
+            <text x="500" y="288" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui">optional: local index / graph cache</text>
+            <text x="500" y="302" fill="#6b7a8f" font-size="9" text-anchor="middle" font-family="system-ui">(separate app — not in pack bytes)</text>
+            <line x1="500" y1="248" x2="500" y2="266" stroke="#6b7a8f" stroke-width="1" stroke-dasharray="3 3" />
+          </svg>
+        </div>
+      </section>
+
+      <section id="pack">
+        <h2>Pack anatomy</h2>
+        <p class="lead">
+          Everything an agent needs for <em>structured</em> context lives in one directory. Normative
+          schemas live in the repo under <code>schemas/</code>; see
+          <a href="../pack-spec.md">pack-spec.md</a>.
+        </p>
+        <div class="tree" aria-label="Example pack directory layout">
+          <span class="dir">my-workload.kgpack/</span><br />
+          ├── <span class="file">manifest.json</span> &nbsp; name, version, kind, pack_id, dependencies<br />
+          ├── <span class="file">entities.jsonl</span> &nbsp; one JSON object per line (id, type, label, …)<br />
+          ├── <span class="file">relationships.jsonl</span> &nbsp; graph edges (from_id, to_id, type)<br />
+          ├── <span class="dir">documents/</span><br />
+          │ &nbsp;&nbsp; └── <span class="file">runbook.md</span><br />
+          ├── <span class="file">provenance.json</span> &nbsp; source_tier, URIs<br />
+          └── <span class="file">capabilities.json</span> &nbsp; MCP / skill references only (no secrets)
+        </div>
+      </section>
+
+      <section id="agent">
+        <h2>Typical agent workflow</h2>
+        <p class="lead">
+          The IDE registers <code>kgx-mcp</code> as an MCP server. The model chooses tools based on
+          the user task — no full-doc re-ingestion each session.
+        </p>
+
+        <div class="diagram" role="img" aria-label="Agent decision loop with MCP tools">
+          <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="70" width="120" height="60" rx="8" fill="#1c2430" stroke="#e8edf4" stroke-width="1.5" />
+            <text x="80" y="95" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">User task</text>
+            <text x="80" y="112" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">"debug S3 policy"</text>
+
+            <rect x="180" y="60" width="140" height="80" rx="8" fill="url(#gAgent)" stroke="#c792ea" stroke-width="1.5" />
+            <text x="250" y="95" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">Agent</text>
+            <text x="250" y="112" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">plans tool calls</text>
+
+            <rect x="360" y="50" width="160" height="100" rx="8" fill="#0d3d38" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="440" y="78" fill="#3dd6c6" font-size="11" text-anchor="middle" font-family="system-ui" font-weight="600">kgx MCP</text>
+            <text x="440" y="98" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="monospace">validate</text>
+            <text x="440" y="112" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="monospace">query</text>
+            <text x="440" y="126" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="monospace">inspect · upsert</text>
+
+            <rect x="560" y="55" width="140" height="90" rx="8" fill="url(#gPack)" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="630" y="88" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="system-ui">Packs on disk</text>
+            <text x="630" y="108" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">aws-core + overlay</text>
+
+            <path d="M140 100 L178 100" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+            <path d="M320 100 L358 100" stroke="#c792ea" stroke-width="1.5" marker-end="url(#arrow)" />
+            <path d="M520 100 L558 100" stroke="#3dd6c6" stroke-width="1.5" marker-end="url(#arrow)" />
+            <path d="M630 145 L630 165 L250 165 L250 140" fill="none" stroke="#8b9cb3" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)" />
+            <text x="440" y="182" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">structured hits → answer / edit overlay</text>
+          </svg>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <div>
+              <p class="step-title">Mount context</p>
+              <p class="step-body">
+                Operator (or CI) places one or more <code>.kgpack</code> paths on the machine the
+                agent uses. Cursor config points MCP at <code>python -m kgx.mcp</code> with
+                <code>cwd</code> set to the repo or pack root.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Validate before trust</p>
+              <p class="step-body">
+                Agent calls <code>kgx_validate_pack</code> to ensure manifest schema and loadability
+                before relying on content.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Scoped retrieval</p>
+              <p class="step-body">
+                <code>kgx_query_pack</code> runs keyword search over entity labels and document paths
+                (semantic / vector search can live in a separate indexer reading the same pack).
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Inspect structure</p>
+              <p class="step-body">
+                <code>kgx_inspect_manifest</code> returns dependencies, kind, and version so the agent
+                knows whether it is reading vendor core vs internal overlay.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Capture new knowledge (optional)</p>
+              <p class="step-body">
+                After solving an incident, the agent can call
+                <code>kgx_pack_entity_upsert</code> / <code>kgx_pack_relationship_upsert</code> to
+                append to an <span class="badge badge-overlay">overlay</span> pack — institutional
+                memory without mutating immutable vendor cores.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <h3>Example Cursor MCP config</h3>
+        <pre class="tree"><code>{
+  "mcpServers": {
+    "kgx": {
+      "command": "python",
+      "args": ["-m", "kgx.mcp"],
+      "cwd": "/path/to/your/project-or-packs"
+    }
+  }
+}</code></pre>
+      </section>
+
+      <section id="mcp">
+        <h2>MCP tools (today)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>kgx_validate_pack</code></td>
+              <td>Schema-check manifest; load entities and relationships</td>
+            </tr>
+            <tr>
+              <td><code>kgx_inspect_manifest</code></td>
+              <td>Return manifest JSON (name, kind, version, dependencies)</td>
+            </tr>
+            <tr>
+              <td><code>kgx_query_pack</code></td>
+              <td>Keyword search → JSON array of document/entity hits</td>
+            </tr>
+            <tr>
+              <td><code>kgx_pack_entity_upsert</code></td>
+              <td>Add or replace an entity; optional markdown body → <code>documents/</code></td>
+            </tr>
+            <tr>
+              <td><code>kgx_pack_relationship_upsert</code></td>
+              <td>Add or replace a graph edge</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="human">
+        <h2>Human operator path</h2>
+        <p class="lead">
+          The same packs are edited and inspected from the terminal — useful for bootstrapping,
+          CI, and debugging agent output.
+        </p>
+        <div class="card-grid">
+          <div class="card">
+            <h4>Ingest</h4>
+            <p><code>task spike</code> · <code>task confluence-pack</code> · provider scripts</p>
+          </div>
+          <div class="card">
+            <h4>Verify</h4>
+            <p><code>kgx validate</code> · <code>kgx inspect</code> · <code>kgx query</code></p>
+          </div>
+          <div class="card">
+            <h4>Edit</h4>
+            <p><code>kgx pack init</code> · <code>kgx pack entity add</code> · <code>manifest set</code></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="future">
+        <h2>Growing the hydrated core (planned)</h2>
+        <p class="lead">
+          kgx keeps packs portable; a separate workspace can rebuild indexes when packs change.
+        </p>
+        <div class="diagram">
+          <svg viewBox="0 0 720 140" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="40" width="140" height="60" rx="8" fill="url(#gPack)" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="110" y="75" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">.kgpack</text>
+
+            <rect x="240" y="30" width="200" height="80" rx="8" fill="#151b24" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="6 4" />
+            <text x="340" y="58" fill="#f0b429" font-size="11" text-anchor="middle" font-family="system-ui">Pack resolver</text>
+            <text x="340" y="76" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">multi-pack + overlays</text>
+            <text x="340" y="92" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">semver dependencies</text>
+
+            <rect x="500" y="30" width="180" height="80" rx="8" fill="#151b24" stroke="#6b8cff" stroke-width="1.5" stroke-dasharray="6 4" />
+            <text x="590" y="58" fill="#6b8cff" font-size="11" text-anchor="middle" font-family="system-ui">Local indexer</text>
+            <text x="590" y="76" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">embeddings · FTS · graph</text>
+            <text x="590" y="92" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">.kgx-cache/ (gitignored)</text>
+
+            <line x1="180" y1="70" x2="238" y2="70" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+            <line x1="440" y1="70" x2="498" y2="70" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arrow)" />
+          </svg>
+        </div>
+        <p class="lead" style="margin-top: 0">
+          Repo analyzer → suggested packs; Confluence via
+          <a href="https://github.com/Spenhouet/confluence-markdown-exporter">confluence-markdown-exporter</a>;
+          metagit-style folder scans — all feeding the same emit → pack → mount loop.
+        </p>
+      </section>
+
+      <footer>
+        <p>
+          Open this file locally:
+          <code>open docs/ai-workflow/index.html</code> (macOS) or
+          <code>task docs-serve</code> from the kgx repo. Spec:
+          <a href="use-cases.html">Use cases</a> ·
+          <a href="../pack-spec.md">pack-spec.md</a> ·
+          <a href="https://github.com/Spenhouet/confluence-markdown-exporter">Confluence export tool</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

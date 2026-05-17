@@ -60,3 +60,14 @@ Packs with `kind: "vendor_core"` are **immutable vendor cores**. Such packs:
 - MUST express external integration only as **references** (for example MCP server names, tool identifiers, skill paths, URIs) in auxiliary metadata or companion files such as `capabilities.json`, never as executable definitions or credential material inside the pack bytes.
 
 Overlays (`overlay`) and workload-specific packs (`workload`) MAY attach additional context subject to separate policy; they still SHOULD avoid shipping secrets and SHOULD prefer references for capabilities.
+
+## Editing packs
+
+Tooling MAY mutate packs on disk via the **`PackEditor`** API (`kgx.core.pack.editor`): load a directory, change manifest / entities / relationships / documents, then **`save()`** (deterministic JSONL ordering, schema validation on manifest when enabled).
+
+Human and agent interfaces:
+
+- **CLI:** `kgx pack init`, `kgx pack entity add|rm|show`, `kgx pack relationship add|rm`, `kgx pack manifest set`, `kgx pack list`
+- **MCP:** `kgx_pack_entity_upsert`, `kgx_pack_relationship_upsert` (stdio server)
+
+Authors SHOULD prefer **`overlay`** or **`workload`** kinds for hand-edited packs; treat **`vendor_core`** as immutable once published.

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kgx — Use cases</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site">
+        <p class="nav-site"><a href="index.html">← AI workflow guide</a></p>
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <rect width="36" height="36" rx="8" fill="#1c2430" stroke="#3dd6c6" stroke-width="1.5" />
+            <path
+              d="M8 24 L14 12 L20 20 L28 8"
+              fill="none"
+              stroke="#3dd6c6"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>kgx — Use cases</span>
+        </div>
+        <p class="tagline">
+          Four real-world patterns: mount vendor truth once, layer internal knowledge on top, and let
+          agents query or extend packs without rebuilding your entire doc corpus every shift.
+        </p>
+        <nav class="toc" aria-label="Use cases">
+          <a href="#oncall">On-call debugging</a>
+          <a href="#memory">Incident memory</a>
+          <a href="#trust">Trust &amp; compliance</a>
+          <a href="#bootstrap">New team bootstrap</a>
+        </nav>
+      </header>
+
+      <section>
+        <h2>At a glance</h2>
+        <div class="use-case-grid">
+          <article class="use-case-card">
+            <h3><a href="#oncall">1. On-call with vendor + runbooks</a></h3>
+            <p>3am S3 policy alert — agent searches AWS pack and Confluence overlay, not the whole internet.</p>
+          </article>
+          <article class="use-case-card">
+            <h3><a href="#memory">2. Post-incident institutional memory</a></h3>
+            <p>Agent writes a postmortem entity into an overlay; the next engineer finds it with <code>kgx query</code>.</p>
+          </article>
+          <article class="use-case-card">
+            <h3><a href="#trust">3. Governed agent context</a></h3>
+            <p>Immutable vendor cores, provenance tiers, and validation before any model sees a pack.</p>
+          </article>
+          <article class="use-case-card">
+            <h3><a href="#bootstrap">4. Day-one team context</a></h3>
+            <p>Export Confluence, emit AWS pack, init workload overlay — Cursor mounts all three.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- USE CASE 1 -->
+      <article id="oncall" class="use-case uc-oncall">
+        <div class="use-case-header">
+          <h2>On-call debugging with layered packs</h2>
+          <p class="persona"><strong>Alex</strong> · platform engineer · payment pipeline</p>
+        </div>
+        <p class="lead">
+          PagerDuty fires on <em>S3 AccessDenied</em> for <code>payment-uploads</code>. Alex opens the service
+          repo in Cursor. The agent already has two packs mounted — no live crawl of AWS docs, no Confluence
+          login in the IDE.
+        </p>
+        <div class="packs-row">
+          <span class="pack-pill vendor">aws-core.kgpack</span>
+          <span class="pack-pill overlay">eng-runbooks.kgpack</span>
+        </div>
+
+        <div class="diagram" role="img" aria-label="On-call flow: alert to agent queries two packs">
+          <svg viewBox="0 0 880 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#8b9cb3" />
+              </marker>
+              <linearGradient id="gPack" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0d3d38" />
+                <stop offset="100%" stop-color="#151b24" />
+              </linearGradient>
+            </defs>
+            <rect x="20" y="80" width="100" height="56" rx="8" fill="#2a1a1a" stroke="#f07178" stroke-width="1.5" />
+            <text x="70" y="104" fill="#f07178" font-size="11" text-anchor="middle" font-family="system-ui">Alert</text>
+            <text x="70" y="120" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">S3 Denied</text>
+
+            <rect x="150" y="70" width="120" height="76" rx="8" fill="#2d1f42" stroke="#c792ea" stroke-width="1.5" />
+            <text x="210" y="100" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="system-ui">Agent in IDE</text>
+            <text x="210" y="118" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="monospace">kgx_query_pack</text>
+            <text x="210" y="132" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">"bucket policy"</text>
+
+            <rect x="310" y="40" width="130" height="70" rx="8" fill="url(#gPack)" stroke="#7c9cff" stroke-width="1.5" />
+            <text x="375" y="68" fill="#7c9cff" font-size="10" text-anchor="middle" font-family="system-ui">vendor_core</text>
+            <text x="375" y="86" fill="#e8edf4" font-size="10" text-anchor="middle" font-family="system-ui">IAM + S3 docs</text>
+            <text x="375" y="100" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">official semantics</text>
+
+            <rect x="310" y="120" width="130" height="70" rx="8" fill="url(#gPack)" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="375" y="148" fill="#3dd6c6" font-size="10" text-anchor="middle" font-family="system-ui">overlay</text>
+            <text x="375" y="166" fill="#e8edf4" font-size="10" text-anchor="middle" font-family="system-ui">payment runbook</text>
+            <text x="375" y="180" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">Confluence export</text>
+
+            <rect x="480" y="70" width="160" height="76" rx="8" fill="#151b24" stroke="#e8edf4" stroke-width="1" />
+            <text x="560" y="98" fill="#e8edf4" font-size="11" text-anchor="middle" font-family="system-ui">Answer cites both</text>
+            <text x="560" y="116" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">AWS: bucket policy syntax</text>
+            <text x="560" y="130" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">Internal: escalate to #payments</text>
+
+            <rect x="680" y="85" width="90" height="46" rx="8" fill="#0d3d38" stroke="#3dd6c6" stroke-width="1.5" />
+            <text x="725" y="108" fill="#3dd6c6" font-size="10" text-anchor="middle" font-family="system-ui">Fix PR</text>
+            <text x="725" y="122" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">policy JSON</text>
+
+            <line x1="120" y1="108" x2="148" y2="108" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arr)" />
+            <line x1="270" y1="95" x2="308" y2="75" stroke="#7c9cff" stroke-width="1.5" marker-end="url(#arr)" />
+            <line x1="270" y1="120" x2="308" y2="155" stroke="#3dd6c6" stroke-width="1.5" marker-end="url(#arr)" />
+            <line x1="440" y1="108" x2="478" y2="108" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arr)" />
+            <line x1="640" y1="108" x2="678" y2="108" stroke="#3dd6c6" stroke-width="1.5" marker-end="url(#arr)" />
+          </svg>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <div>
+              <p class="step-title">Nightly CI refreshes vendor pack</p>
+              <p class="step-body"><code>task spike</code> (or provider pipeline) rebuilds <code>aws-core.kgpack</code> from official docs — version bumped, Git-tagged.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Weekly Confluence export → overlay</p>
+              <p class="step-body"><code>cme spaces …</code> then <code>task confluence-pack</code> produces <code>eng-runbooks.kgpack</code> with <span class="badge badge-overlay">internal_overlay</span> provenance.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="step-title">Agent queries, does not re-ingest</p>
+              <p class="step-body">MCP <code>kgx_query_pack</code> on each path returns scoped hits — faster and more faithful than pasting random search results.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="outcome">
+          <h4>Outcome</h4>
+          <p>Mean time to diagnose drops because the model reasons over <strong>curated, versioned</strong> context — vendor facts plus your runbook — instead of stale training data or a one-off RAG scrape.</p>
+        </div>
+      </article>
+
+      <!-- USE CASE 2 -->
+      <article id="memory" class="use-case uc-memory">
+        <div class="use-case-header">
+          <h2>Incident → durable institutional memory</h2>
+          <p class="persona"><strong>Morgan</strong> · engineering lead · checkout platform</p>
+        </div>
+        <p class="lead">
+          A Sev-2 checkout timeout is resolved. Morgan asks the agent to capture what happened in the team's
+          <strong>overlay pack</strong> — not a wiki page that drifts, not a Slack thread that disappears.
+        </p>
+        <div class="packs-row">
+          <span class="pack-pill overlay">checkout-ops.kgpack</span>
+        </div>
+
+        <div class="diagram" role="img" aria-label="Timeline: incident, agent upsert, future query finds postmortem">
+          <svg viewBox="0 0 880 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#8b9cb3" />
+              </marker>
+            </defs>
+            <line x1="60" y1="100" x2="820" y2="100" stroke="#2a3544" stroke-width="2" />
+
+            <circle cx="120" cy="100" r="8" fill="#f07178" />
+            <text x="120" y="78" fill="#f07178" font-size="10" text-anchor="middle" font-family="system-ui">T+0</text>
+            <text x="120" y="130" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">Incident</text>
+
+            <rect x="280" y="55" width="140" height="90" rx="8" fill="#2d1f42" stroke="#c792ea" stroke-width="1.5" />
+            <text x="350" y="82" fill="#c792ea" font-size="10" text-anchor="middle" font-family="system-ui">Agent (MCP)</text>
+            <text x="350" y="100" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="monospace">entity_upsert</text>
+            <text x="350" y="116" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">postmortem:checkout-timeout</text>
+            <text x="350" y="130" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="monospace">relationship_upsert</text>
+
+            <circle cx="350" cy="100" r="8" fill="#c792ea" />
+            <text x="350" y="158" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">T+2h resolved</text>
+
+            <circle cx="620" cy="100" r="8" fill="#3dd6c6" />
+            <text x="620" y="78" fill="#3dd6c6" font-size="10" text-anchor="middle" font-family="system-ui">T+2 weeks</text>
+            <rect x="540" y="118" width="160" height="50" rx="6" fill="#151b24" stroke="#3dd6c6" stroke-width="1" />
+            <text x="620" y="140" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="system-ui">New on-call queries</text>
+            <text x="620" y="154" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="monospace">"checkout timeout"</text>
+            <text x="620" y="178" fill="#3dd6c6" font-size="9" text-anchor="middle" font-family="system-ui">→ hits postmortem entity</text>
+
+            <line x1="128" y1="100" x2="342" y2="100" stroke="#8b9cb3" stroke-width="1.5" marker-end="url(#arr2)" />
+            <line x1="358" y1="100" x2="612" y2="100" stroke="#3dd6c6" stroke-width="1.5" marker-end="url(#arr2)" />
+          </svg>
+        </div>
+
+        <div class="card">
+          <h4>What gets written</h4>
+          <p style="margin:0;color:var(--muted);font-size:0.92rem">
+            Entity <code>incident:2026-05-checkout-timeout</code> with markdown body (timeline, root cause, action items).
+            Relationships <code>incident → affected_service → checkout-api</code> link the graph for future traversal.
+          </p>
+        </div>
+
+        <div class="outcome">
+          <h4>Outcome</h4>
+          <p>Knowledge compounds in Git-reviewable packs. The next engineer — human or agent — inherits the same structured artifact, not a vague "check Confluence."</p>
+        </div>
+      </article>
+
+      <!-- USE CASE 3 -->
+      <article id="trust" class="use-case uc-trust">
+        <div class="use-case-header">
+          <h2>Governed context for security &amp; compliance</h2>
+          <p class="persona"><strong>Jordan</strong> · security architect · regulated workload</p>
+        </div>
+        <p class="lead">
+          Agents are allowed on production systems — but only with <strong>approved</strong> knowledge sources.
+          Jordan's team publishes vendor packs as immutable <span class="badge badge-vendor">vendor_core</span> artifacts
+          and keeps policy overlays separate.
+        </p>
+
+        <div class="diagram" role="img" aria-label="Trust zones: vendor immutable, overlay internal, validate gate">
+          <svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#8b9cb3" />
+              </marker>
+            </defs>
+            <rect x="40" y="30" width="240" height="180" rx="10" fill="#151b24" stroke="#7c9cff" stroke-width="2" />
+            <text x="160" y="58" fill="#7c9cff" font-size="12" text-anchor="middle" font-family="system-ui" font-weight="600">Vendor zone</text>
+            <text x="160" y="80" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">vendor_core · read-only in agents</text>
+            <text x="160" y="100" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="system-ui">provenance: vendor_official</text>
+            <text x="160" y="120" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">no secrets in pack bytes</text>
+            <rect x="70" y="140" width="180" height="50" rx="6" fill="#1c2430" stroke="#7c9cff" stroke-width="1" />
+            <text x="160" y="162" fill="#7c9cff" font-size="9" text-anchor="middle" font-family="monospace">aws-core@1.4.2.kgpack</text>
+            <text x="160" y="178" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">CI-signed tarball (future)</text>
+
+            <rect x="320" y="30" width="240" height="180" rx="10" fill="#151b24" stroke="#3dd6c6" stroke-width="2" />
+            <text x="440" y="58" fill="#3dd6c6" font-size="12" text-anchor="middle" font-family="system-ui" font-weight="600">Internal zone</text>
+            <text x="440" y="80" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">overlay · editable by owners</text>
+            <text x="440" y="100" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="system-ui">provenance: internal_overlay</text>
+            <text x="440" y="120" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">capabilities = references only</text>
+            <rect x="350" y="140" width="180" height="50" rx="6" fill="#1c2430" stroke="#3dd6c6" stroke-width="1" />
+            <text x="440" y="162" fill="#3dd6c6" font-size="9" text-anchor="middle" font-family="monospace">policy-controls.kgpack</text>
+
+            <rect x="600" y="70" width="120" height="100" rx="8" fill="#2a2410" stroke="#f0b429" stroke-width="1.5" />
+            <text x="660" y="100" fill="#f0b429" font-size="10" text-anchor="middle" font-family="system-ui">Gate</text>
+            <text x="660" y="118" fill="#e8edf4" font-size="9" text-anchor="middle" font-family="monospace">kgx validate</text>
+            <text x="660" y="134" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">schema + load</text>
+            <text x="660" y="150" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">before MCP mount</text>
+
+            <rect x="740" y="85" width="100" height="70" rx="8" fill="#2d1f42" stroke="#c792ea" stroke-width="1.5" />
+            <text x="790" y="115" fill="#c792ea" font-size="10" text-anchor="middle" font-family="system-ui">Agent fleet</text>
+            <text x="790" y="132" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">approved packs only</text>
+
+            <line x1="280" y1="120" x2="318" y2="120" stroke="#8b9cb3" stroke-width="1" stroke-dasharray="4 3" />
+            <line x1="560" y1="120" x2="598" y2="120" stroke="#f0b429" stroke-width="1.5" marker-end="url(#arr3)" />
+            <line x1="720" y1="120" x2="738" y2="120" stroke="#c792ea" stroke-width="1.5" marker-end="url(#arr3)" />
+            <line x1="280" y1="120" x2="598" y2="120" stroke="#7c9cff" stroke-width="1" marker-end="url(#arr3)" />
+          </svg>
+        </div>
+
+        <div class="card-grid">
+          <div class="card">
+            <h4>Immutable vendor cores</h4>
+            <p>Agents cannot call MCP upsert on published vendor packs — only overlays owned by the team.</p>
+          </div>
+          <div class="card">
+            <h4>Provenance in the artifact</h4>
+            <p><code>provenance.json</code> records <code>source_tier</code> so downstream indexers can weight trust.</p>
+          </div>
+          <div class="card">
+            <h4>Validate in CI</h4>
+            <p><code>kgx validate</code> in pipeline blocks broken manifests before they reach developer laptops.</p>
+          </div>
+        </div>
+
+        <div class="outcome">
+          <h4>Outcome</h4>
+          <p>Security gets auditable boundaries: what the model saw, where it came from, and which packs are allowed to change.</p>
+        </div>
+      </article>
+
+      <!-- USE CASE 4 -->
+      <article id="bootstrap" class="use-case uc-bootstrap">
+        <div class="use-case-header">
+          <h2>Bootstrapping a new service team</h2>
+          <p class="persona"><strong>Riley</strong> · tech lead · greenfield inventory-api</p>
+        </div>
+        <p class="lead">
+          A new squad spins up <code>inventory-api</code>. Riley assembles three packs in an afternoon — vendor AWS,
+          org platform Confluence space, and a thin workload overlay — then points Cursor MCP at the folder.
+        </p>
+        <div class="packs-row">
+          <span class="pack-pill vendor">aws-core.kgpack</span>
+          <span class="pack-pill overlay">platform-docs.kgpack</span>
+          <span class="pack-pill workload">inventory-api.kgpack</span>
+        </div>
+
+        <div class="diagram" role="img" aria-label="Three packs composed for new team agent context">
+          <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#8b9cb3" />
+              </marker>
+              <linearGradient id="gPack" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0d3d38" />
+                <stop offset="100%" stop-color="#151b24" />
+              </linearGradient>
+            </defs>
+
+            <text x="140" y="24" fill="#8b9cb3" font-size="10" font-family="system-ui" font-weight="600">BUILD (day 1)</text>
+            <rect x="40" y="40" width="200" height="44" rx="6" fill="#1c2430" stroke="#7c9cff" stroke-width="1" />
+            <text x="140" y="58" fill="#7c9cff" font-size="9" text-anchor="middle" font-family="system-ui">task spike → aws-core</text>
+            <text x="140" y="72" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">vendor_core</text>
+
+            <rect x="40" y="92" width="200" height="44" rx="6" fill="#1c2430" stroke="#3dd6c6" stroke-width="1" />
+            <text x="140" y="110" fill="#3dd6c6" font-size="9" text-anchor="middle" font-family="system-ui">cme + confluence-pack</text>
+            <text x="140" y="124" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">platform overlay</text>
+
+            <rect x="40" y="144" width="200" height="44" rx="6" fill="#1c2430" stroke="#6b8cff" stroke-width="1" />
+            <text x="140" y="162" fill="#6b8cff" font-size="9" text-anchor="middle" font-family="system-ui">kgx pack init + entity add</text>
+            <text x="140" y="176" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">workload: ADRs, boundaries</text>
+
+            <text x="440" y="24" fill="#8b9cb3" font-size="10" text-anchor="middle" font-family="system-ui" font-weight="600">MOUNT</text>
+            <rect x="300" y="70" width="280" height="120" rx="10" fill="#151b24" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="6 4" />
+            <text x="440" y="98" fill="#f0b429" font-size="11" text-anchor="middle" font-family="system-ui">packs/ (workspace)</text>
+            <text x="360" y="122" fill="#7c9cff" font-size="8" font-family="monospace">aws-core.kgpack</text>
+            <text x="360" y="138" fill="#3dd6c6" font-size="8" font-family="monospace">platform-docs.kgpack</text>
+            <text x="360" y="154" fill="#6b8cff" font-size="8" font-family="monospace">inventory-api.kgpack</text>
+            <text x="440" y="178" fill="#8b9cb3" font-size="8" text-anchor="middle" font-family="system-ui">resolver (planned) merges views</text>
+
+            <rect x="640" y="80" width="200" height="100" rx="8" fill="#2d1f42" stroke="#c792ea" stroke-width="1.5" />
+            <text x="740" y="110" fill="#e8edf4" font-size="12" text-anchor="middle" font-family="system-ui">Day-one agent</text>
+            <text x="740" y="130" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">"How do we auth to S3?"</text>
+            <text x="740" y="148" fill="#8b9cb3" font-size="9" text-anchor="middle" font-family="system-ui">"What's our K8s namespace?"</text>
+            <text x="740" y="166" fill="#3dd6c6" font-size="8" text-anchor="middle" font-family="system-ui">answers from packs, not guesswork</text>
+
+            <line x1="240" y1="62" x2="298" y2="100" stroke="#8b9cb3" stroke-width="1" marker-end="url(#arr4)" />
+            <line x1="240" y1="114" x2="298" y2="120" stroke="#8b9cb3" stroke-width="1" marker-end="url(#arr4)" />
+            <line x1="240" y1="166" x2="298" y2="140" stroke="#8b9cb3" stroke-width="1" marker-end="url(#arr4)" />
+            <line x1="580" y1="130" x2="638" y2="130" stroke="#c792ea" stroke-width="1.5" marker-end="url(#arr4)" />
+          </svg>
+        </div>
+
+        <pre class="tree"><code># Riley's afternoon
+cme spaces https://wiki.example.com/display/PLATFORM
+task confluence-pack EXPORT_DIR=~/exports/platform -o packs/platform-docs.kgpack
+task spike   # → packs/aws-core.kgpack
+kgx pack init packs/inventory-api.kgpack --name inventory-api --pack-id https://example.com/packs/inventory-api
+kgx pack entity add packs/inventory-api.kgpack --id adr:001 --type adr --label "Service boundaries" --body-file ./adr-001.md</code></pre>
+
+        <div class="outcome">
+          <h4>Outcome</h4>
+          <p>New hires and coding agents share the same <strong>curated context stack</strong> on day one — without waiting for a platform team to build a custom RAG pipeline per service.</p>
+        </div>
+      </article>
+
+      <footer>
+        <p>
+          <a href="index.html">Workflow guide</a> ·
+          <a href="../pack-spec.md">pack-spec.md</a> ·
+          <code>task docs-serve</code>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

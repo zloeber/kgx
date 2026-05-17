@@ -4,7 +4,9 @@ import json
 
 from mcp.server.fastmcp import FastMCP
 
+from kgx.core.pack.editor import PackEditor
 from kgx.core.pack.loader import load_pack_directory
+from kgx.core.pack.model import EntityRecord, RelationshipRecord
 from kgx.core.pack.validator import validate_pack_directory
 from kgx.core.search.keyword import SearchHit, keyword_search
 from kgx.mcp.paths import resolve_pack_directory
@@ -41,6 +43,49 @@ def kgx_inspect_manifest(pack_path: str) -> str:
     path = resolve_pack_directory(pack_path)
     pack = load_pack_directory(path)
     return pack.manifest.model_dump_json(indent=2)
+
+
+@mcp.tool(name="kgx_pack_entity_upsert")
+def kgx_pack_entity_upsert(
+    pack_path: str,
+    entity_id: str,
+    type: str,
+    label: str,
+    body_md: str = "",
+) -> str:
+    """Add or replace an entity in a pack; optional markdown body writes documents/."""
+    path = resolve_pack_directory(pack_path)
+    editor = PackEditor.open(path)
+    body = body_md if body_md.strip() else None
+    editor.upsert_entity(
+        EntityRecord(id=entity_id, type=type, label=label),
+        body_md=body,
+    )
+    editor.save()
+    return json.dumps({"ok": True, "entity_id": entity_id}, ensure_ascii=False)
+
+
+@mcp.tool(name="kgx_pack_relationship_upsert")
+def kgx_pack_relationship_upsert(
+    pack_path: str,
+    relationship_id: str,
+    from_id: str,
+    to_id: str,
+    type: str,
+) -> str:
+    """Add or replace a relationship in a pack."""
+    path = resolve_pack_directory(pack_path)
+    editor = PackEditor.open(path)
+    editor.upsert_relationship(
+        RelationshipRecord(
+            id=relationship_id,
+            from_id=from_id,
+            to_id=to_id,
+            type=type,
+        )
+    )
+    editor.save()
+    return json.dumps({"ok": True, "relationship_id": relationship_id}, ensure_ascii=False)
 
 
 @mcp.tool(name="kgx_query_pack")

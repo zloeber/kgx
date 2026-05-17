@@ -71,3 +71,13 @@ tasks:
       EXPORT_DIR: '{{default "examples/fixtures/confluence-export-sample" .EXPORT_DIR}}'
     cmds:
       - "{{.PY}} scripts/confluence_export_to_pack.py {{.EXPORT_DIR}} -o build/confluence-export.kgpack"
+
+  docs-serve:
+    desc: Serve AI workflow docs at http://127.0.0.1:8765
+    cmds:
+      - '{{.PY_BOOT}} -m http.server 8765 --directory docs/ai-workflow'
+
+  docs-open:
+    desc: Open AI workflow illustrated site in the default browser (macOS)
+    cmds:
+      - open docs/ai-workflow/index.html
